@@ -1,4 +1,5 @@
 const express = require('express');
+const connectDB = require('../config/database');
 
 class Server {
     constructor() {
@@ -7,6 +8,7 @@ class Server {
 
         this.issuePath = "/api/issue";
         this.routes();
+        connectDB();
     }
 
     routes() {
