@@ -54,7 +54,7 @@ export function IssueModal({ isOpen, onClose, mode, issueData, onSubmit }) {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        onSubmit({ title, description, priority, status });
+        onSubmit({ _id: issueData?._id, title, description, priority, status });
     }
 
     return (

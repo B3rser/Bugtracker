@@ -24,3 +24,49 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     background-color: var(--color-secondary);
 }
+
+/*IconBtn*/
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background-color: transparent;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.icon-btn svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.icon-btn:hover {
+  transform: scale(1.1);
+}
+
+.icon-btn:active {
+  transform: scale(0.95);
+}
+
+/* --- Variantes de Color --- */
+
+.icon-btn.primary {
+  color: var(--color-primary);
+}
+
+.icon-btn.primary:hover {
+  background-color: rgba(68, 187, 164, 0.1); 
+}
+
+.icon-btn.danger {
+  color: var(--color-error-text);
+}
+
+.icon-btn.danger:hover {
+  background-color: rgba(185, 28, 28, 0.1);
+}

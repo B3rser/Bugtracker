@@ -6,9 +6,9 @@ const apiClient = axios.create({
   baseURL: API_URL,
 });
 
-export const getAllIssues = async () => {
+export const getAllIssues = async (params = {}) => {
   try {
-    const response = await apiClient.get('/issues');
+    const response = await apiClient.get('/issues', { params });
     return response.data;
   } catch (error) {
     throw error;
@@ -21,7 +21,7 @@ export const getIssueById = async (id) => {
     return response.data;
   } catch (error) {
     throw error;
-  } 
+  }
 };
 
 export const createIssue = async (issueData) => {

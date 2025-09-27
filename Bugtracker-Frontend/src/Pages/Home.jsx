@@ -1,5 +1,5 @@
 import React from 'react'
-import { getAllIssues, createIssue } from '../Services/IssueService';
+import { getAllIssues, createIssue, updateIssue, deleteIssue } from '../Services/IssueService';
 import { FloatingBtn } from '../Components/Buttons/FloatingBtn';
 import { IssueModal } from '../Components/IssueModal';
 import { Select } from '../Components/Select';
@@ -75,25 +75,25 @@ export function Home() {
   }
 
   const onCreateIssue = async (issueData) => {
-    console.log(issueData);
     const response = await createIssue(issueData);
   }
 
-  const onEditIssue = async (issueData) => {
-
+  const onEditIssue = async (id, issueData) => {
+    const response = await updateIssue(id, issueData);
   }
 
   const handleSubmit = (issueData) => {
     if (mode == 'create') {
       onCreateIssue(issueData);
     } else {
-      onEditIssue(issueData)
+      onEditIssue(issueData._id, issueData)
     }
     refreshData();
     closeModal();
   }
 
-  const onDeleteIssue = () => {
+  const onDeleteIssue = async (id) => {
+    const response = await deleteIssue(id);
     refreshData();
   }
 
@@ -126,18 +126,18 @@ export function Home() {
       <h1 style={{ color: "var(--color-text)" }}>Issues</h1>
       <div style={{ display: "flex", flexDirection: "row", width: "100%", justifyContent: "end" }}>
         <Select
-          name="status"
-          label="Status"
-          value={filters.status}
-          onChange={handleFilterChange}
-          options={statusOptions}
-        />
-        <Select
           name="priority"
           label="Priority"
           value={filters.priority}
           onChange={handleFilterChange}
           options={priorityOptions}
+        />
+        <Select
+          name="status"
+          label="Status"
+          value={filters.status}
+          onChange={handleFilterChange}
+          options={statusOptions}
         />
       </div>
       <IssueModal isOpen={openModal} mode={mode} onClose={closeModal} onSubmit={handleSubmit} issueData={selectedData} />

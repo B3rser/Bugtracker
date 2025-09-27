@@ -13,9 +13,26 @@
     transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
+.card-actions {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    display: flex;
+    gap: 0.25rem;
+
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
 .issue-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.issue-card:hover .card-actions {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .card-header {
@@ -44,7 +61,6 @@
     border-radius: 12px;
     font-size: 0.75rem;
     font-weight: 600;
-    text-transform: capitalize;
 }
 
 .status-open {

@@ -1,6 +1,9 @@
 const { response, request } = require('express');
 const { IssueRepository } = require('../repositories/IssueRepository');
 
+const validPriorities = ['low', 'medium', 'high'];
+const validStatuses = ['open', 'in_progress', 'done'];
+
 const getAllIssues = async (req = request, res = response) => {
     try {
         const { status, priority, page = 1, limit = 10 } = req.query;
@@ -18,9 +21,10 @@ const getAllIssues = async (req = request, res = response) => {
         const issues = await IssueRepository.getAll(filters, Number(limit), skip);
         const totalIssues = await IssueRepository.countWithFilters(filters);
 
+        const totalPages = Math.ceil(totalIssues / limit);
         res.status(200).json({
             issues,
-            totalPages: Math.ceil(totalIssues / limit),
+            totalPages:  totalPages == 0 ? 1 : totalPages,
             currentPage: Number(page),
         });
 
@@ -46,10 +50,7 @@ const getIssueById = async (req = request, res = response) => {
 };
 
 const createIssue = async (req = request, res = response) => {
-    console.log(req);
     let { title, description, priority, status } = req.body;
-    const validPriorities = ['low', 'medium', 'high'];
-    const validStatuses = ['open', 'in_progress', 'done'];
 
     /** Debería haber un mejor método para realizar las validaciones
     */
