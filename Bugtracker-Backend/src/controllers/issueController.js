@@ -3,11 +3,30 @@ const { IssueRepository } = require('../repositories/IssueRepository');
 
 const getAllIssues = async (req = request, res = response) => {
     try {
-        const results = await IssueRepository.getAll();
-        res.status(200).json(results);
+        const { status, priority, page = 1, limit = 10 } = req.query;
+
+        const filters = {};
+        if (status) {
+            filters.status = status;
+        }
+        if (priority) {
+            filters.priority = priority;
+        }
+
+        const skip = (page - 1) * limit;
+
+        const issues = await IssueRepository.getAll(filters, Number(limit), skip);
+        const totalIssues = await IssueRepository.countWithFilters(filters);
+
+        res.status(200).json({
+            issues,
+            totalPages: Math.ceil(totalIssues / limit),
+            currentPage: Number(page),
+        });
+
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Internal Server Error.' });
+        res.status(500).json({ message: 'Internal Server Error.' });
     }
 };
 

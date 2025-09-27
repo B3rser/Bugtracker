@@ -2,8 +2,10 @@ const Issue = require("../models/IssueModel");
 const ObjectId = require("mongoose").Types.ObjectId
 
 class IssueRepository {
-    static async getAll() {
-        return await Issue.find();
+    static async getAll(filters = {}, limit = 10, skip = 0) {
+        return await Issue.find(filters)
+            .limit(limit)
+            .skip(skip);
     }
 
     static async getById(id) {
@@ -11,6 +13,10 @@ class IssueRepository {
             return null;
         }
         return await Issue.findOne({ _id: id })
+    }
+
+    static async countWithFilters(filters = {}) {
+        return await Issue.countDocuments(filters);
     }
 
     static async create(IssueData) {

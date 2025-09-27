@@ -18,14 +18,18 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+.card-header {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
 .card-header h3 {
     margin: 0;
     font-size: 1.1rem;
     color: var(--color-text);
-
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 
 .card-footer {
@@ -199,3 +203,15 @@
     outline: none;
     border-color: var(--color-primary);
 }
+
+/*IssueCardsContainer*/
+.issue-cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 1rem;
+}
+
+.no-issues-message {}

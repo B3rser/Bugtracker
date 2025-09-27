@@ -4,10 +4,19 @@ import { Select } from './Select';
 
 export function IssueModal({ isOpen, onClose, mode, issueData, onSubmit }) {
     if (!isOpen) return null;
-    const [priority, setPriority] = React.useState('low'); // 'low', 'medium', 'high'
+    const [title, setTitle] = React.useState('');
+    const [description, setDescription] = React.useState('');
+    const [priority, setPriority] = React.useState('medium'); // 'low', 'medium', 'high'
     const [status, setStatus] = React.useState('open'); // open, in_progress, done
 
     const isReadOnly = mode === 'view';
+
+    React.useEffect(() => {
+        setTitle(issueData?.title || '');
+        setDescription(issueData?.description || '');
+        setPriority(issueData?.priority || 'medium');
+        setStatus(issueData?.status || 'open');
+    }, [issueData]);
 
     const handlePriorityChange = (event) => {
         setPriority(event.target.value);
@@ -16,6 +25,14 @@ export function IssueModal({ isOpen, onClose, mode, issueData, onSubmit }) {
     const handleStatusChange = (event) => {
         setStatus(event.target.value);
     };
+
+    const handleTitleChange = (event) => {
+        setTitle(event.target.value);
+    }
+
+    const handleDescriptionChange = (event) => {
+        setDescription(event.target.value);
+    }
 
     const statusOptions = [
         { value: 'open', label: 'Open' },
@@ -35,23 +52,31 @@ export function IssueModal({ isOpen, onClose, mode, issueData, onSubmit }) {
         return 'Issue Details';
     };
 
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        onSubmit({ title, description, priority, status });
+    }
+
     return (
         <div className="modal-backdrop">
             <div className="modal-content">
                 <h2>{getTitle()}</h2>
 
-                <form onSubmit={onSubmit}>
+                <form onSubmit={handleSubmit}>
                     <label>Title</label>
-                    <input
+                    <textarea
                         type="text"
-                        defaultValue={issueData?.title || ''}
                         disabled={isReadOnly}
+                        value={title}
+                        onChange={handleTitleChange}
+                        required={true}
                     />
 
                     <label>Description</label>
                     <textarea
-                        defaultValue={issueData?.description || ''}
                         disabled={isReadOnly}
+                        value={description}
+                        onChange={handleDescriptionChange}
                     />
 
                     <Select

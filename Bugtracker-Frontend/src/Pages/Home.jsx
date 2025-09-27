@@ -1,105 +1,165 @@
 import React from 'react'
-import { IssueCard } from '../Components/IssueCard';
-import { getAllIssues } from '../Services/IssueService';
+import { getAllIssues, createIssue } from '../Services/IssueService';
 import { FloatingBtn } from '../Components/Buttons/FloatingBtn';
 import { IssueModal } from '../Components/IssueModal';
 import { Select } from '../Components/Select';
+import { IssueCardsContainer } from '../Components/IssueCardsContainer';
 
 export function Home() {
   const [loading, setLoading] = React.useState(true);
   const [issues, setIssues] = React.useState([]);
-  const [priority, setPriority] = React.useState('all'); // 'all', 'low', 'medium', 'high'
-  const [status, setStatus] = React.useState('all'); // 'all', open, in_progress, done
+  const [filters, setFilters] = React.useState({ status: '', priority: '' });
+  const [pagination, setPagination] = React.useState({ currentPage: 1, totalPages: 1 });
+  const [dataVersion, setDataVersion] = React.useState(0);
 
   const [openModal, setOpenModal] = React.useState(false);
   const [mode, setMode] = React.useState('view'); // 'view', 'edit', 'create'
+  const [selectedData, setSelectedData] = React.useState({});
+
+  const LIMIT_CARDS = 12;
 
   React.useEffect(() => {
-    document.title = 'Home'
-    let issuesData = getAllIssues();
+    document.title = "Home"
+    const fetchIssues = async () => {
+      setLoading(true);
+      try {
+        const params = {
+          ...filters,
+          page: pagination.currentPage,
+          limit: LIMIT_CARDS
+        };
 
-    issuesData.then(data => {
-      console.log("Fetched issues:", data);
-      setIssues(data);
-      setLoading(false);
-    }).catch(err => {
-      console.error("Failed to fetch issues:", err);
-      setLoading(false);
-    });
+        if (!params.status) delete params.status;
+        if (!params.priority) delete params.priority;
 
-  }, []);
+        const response = await getAllIssues(params);
 
-  if (loading) {
-    return <div>Loading...</div>
-  }
+        setIssues(response.issues);
+        setPagination({
+          currentPage: response.currentPage,
+          totalPages: response.totalPages,
+        });
+      } catch (error) {
+        console.error("Error fetching issues:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchIssues();
+  }, [filters, pagination.currentPage, dataVersion]);
+
+  const refreshData = () => {
+    setDataVersion(currentVersion => currentVersion + 1);
+  };
 
   const closeModal = () => {
     setOpenModal(false);
   }
 
   const openModalNewIssue = () => {
+    setSelectedData({});
     setMode("create");
     setOpenModal(true);
   }
 
-  const openModalViewIssue = () => {
+  const openModalViewIssue = (issueData) => {
+    setSelectedData(issueData);
     setMode("view");
     setOpenModal(true);
   }
 
-  const openModalEditIssue = () => {
+  const openModalEditIssue = (issueData) => {
+    setSelectedData(issueData)
     setMode("edit");
     setOpenModal(true);
   }
 
-  const deleteIssue = () => {
+  const onCreateIssue = async (issueData) => {
+    console.log(issueData);
+    const response = await createIssue(issueData);
+  }
+
+  const onEditIssue = async (issueData) => {
 
   }
 
-  const handlePriorityChange = (event) => {
-    setPriority(event.target.value);
+  const handleSubmit = (issueData) => {
+    if (mode == 'create') {
+      onCreateIssue(issueData);
+    } else {
+      onEditIssue(issueData)
+    }
+    refreshData();
+    closeModal();
+  }
+
+  const onDeleteIssue = () => {
+    refreshData();
+  }
+
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters(prev => ({ ...prev, [name]: value }));
+    setPagination(prev => ({ ...prev, currentPage: 1 }));
   };
 
-  const handleStatusChange = (event) => {
-    setStatus(event.target.value);
-  };
+  const goToPage = (pageNumber) => {
+    setPagination(prev => ({ ...prev, currentPage: pageNumber }));
+  }
 
   const statusOptions = [
-    { value: 'all', label: 'All' },
+    { value: '', label: 'All' },
     { value: 'open', label: 'Open' },
     { value: 'in_progress', label: 'In Progress' },
     { value: 'done', label: 'Done' },
   ];
 
   const priorityOptions = [
-    { value: 'all', label: 'All' },
+    { value: '', label: 'All' },
     { value: 'low', label: 'Low' },
     { value: 'medium', label: 'Medium' },
     { value: 'high', label: 'High' },
   ];
 
   return (
-    <>
+    <div style={{ width: "100%" }}>
       <h1 style={{ color: "var(--color-text)" }}>Issues</h1>
-      <div>
+      <div style={{ display: "flex", flexDirection: "row", width: "100%", justifyContent: "end" }}>
         <Select
-          label="Priority"
-          value={priority}
-          onChange={handlePriorityChange}
-          options={priorityOptions}
-        />
-        <Select
+          name="status"
           label="Status"
-          value={status}
-          onChange={handleStatusChange}
+          value={filters.status}
+          onChange={handleFilterChange}
           options={statusOptions}
         />
+        <Select
+          name="priority"
+          label="Priority"
+          value={filters.priority}
+          onChange={handleFilterChange}
+          options={priorityOptions}
+        />
       </div>
-      <IssueModal isOpen={openModal} mode={mode} onClose={closeModal} onSubmit={() => { }} />
+      <IssueModal isOpen={openModal} mode={mode} onClose={closeModal} onSubmit={handleSubmit} issueData={selectedData} />
       <FloatingBtn onClick={openModalNewIssue} />
-      <div className="issue-cards-container">
-        {issues.map((issue) => <IssueCard issueData={issue} onCardClick={openModalViewIssue} onEdit={openModalEditIssue} onDelete={deleteIssue} key={issue._id} />)}
+      {loading ? <p>Loading...</p> : <IssueCardsContainer onCardClick={openModalViewIssue} onEdit={openModalEditIssue} onDelete={onDeleteIssue} issues={issues} />}
+      <div className="pagination-container">
+        <button
+          onClick={() => goToPage(pagination.currentPage - 1)}
+          disabled={pagination.currentPage <= 1}
+        >
+          Previous
+        </button>
+        <span>
+          Page {pagination.currentPage} of {pagination.totalPages}
+        </span>
+        <button
+          onClick={() => goToPage(pagination.currentPage + 1)}
+          disabled={pagination.currentPage >= pagination.totalPages}
+        >
+          Next
+        </button>
       </div>
-    </>
+    </div>
   )
 }
