@@ -10,6 +10,7 @@ const issueSchema = new mongoose.Schema({
     description: {
         type: String,
         maxlength: 1000,
+        default: ''
     },
     priority: {
         type: String,
@@ -23,4 +24,4 @@ const issueSchema = new mongoose.Schema({
     }
 });
 
-model.exports = mongoose.model('Issue', issueSchema);
+module.exports = mongoose.model('Issue', issueSchema);
