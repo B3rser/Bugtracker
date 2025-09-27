@@ -1,11 +1,41 @@
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+  margin: 0 auto;
+  text-align: center;
+  padding: 0;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  --color-text: #393E41;
+  --color-primary: #44BBA4;
+  --color-secondary: #69C7B4;
+  --color-background: #E7E5DF;
+  --color-subtle: #D3D0CB;
+  --color-white: #FFFFFF;
+  --color-black: #000000;
+
+  --color-status-open-bg: #dbeafe;
+  --color-status-open-text: #1e40af;
+  --color-status-progress-bg: #fef9c3;
+  --color-status-progress-text: #854d0e;
+  --color-status-done-bg: #dcfce7;
+  --color-status-done-text: #166534;
+
+  --color-priority-low-bg: #e0e7ff;
+  --color-priority-low-text: #4338ca;
+  --color-priority-medium-bg: #ffe4e6;
+  --color-priority-medium-text: #9f1239;
+  --color-priority-high-bg: #fee2e2;
+  --color-priority-high-text: #b91c1c;
+
+  --color-info-bg: #dbeafe;
+  --color-info-text: #1e40af;
+  --color-success-bg: #dcfce7;
+  --color-success-text: #166534;
+  --color-warning-bg: #fef9c3;
+  --color-warning-text: #854d0e;
+  --color-error-bg: #fee2e2;
+  --color-error-text: #b91c1c;
+  
+  background-color: var(--color-background);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -15,6 +45,7 @@
 
 body {
   margin: 0;
+  background-color: var(--color-background);
   display: flex;
   place-items: center;
   min-width: 320px;
