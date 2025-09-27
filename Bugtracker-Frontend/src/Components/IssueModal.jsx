@@ -1,6 +1,7 @@
 import React from 'react';
 import './Components.css';
 import { Select } from './Select';
+import { Button } from './Buttons/Button';
 
 export function IssueModal({ isOpen, onClose, mode, issueData, onSubmit }) {
     if (!isOpen) return null;
@@ -66,7 +67,7 @@ export function IssueModal({ isOpen, onClose, mode, issueData, onSubmit }) {
                     <label>Title</label>
                     <textarea
                         type="text"
-                        disabled={isReadOnly}
+                        disabled={isReadOnly || status == 'done'}
                         value={title}
                         onChange={handleTitleChange}
                         required={true}
@@ -96,11 +97,11 @@ export function IssueModal({ isOpen, onClose, mode, issueData, onSubmit }) {
                     />
 
                     <div className="modal-actions">
-                        {mode !== 'view' && <button type="submit">Save Changes</button>}
+                        {mode !== 'view' && <Button type="submit" variant="primary" >Save Changes</Button>}
 
-                        <button type="button" onClick={onClose}>
+                        <Button type="button" variant="secondary" onClick={onClose}>
                             {mode === 'view' ? 'Close' : 'Cancel'}
-                        </button>
+                        </Button>
                     </div>
                 </form>
             </div>

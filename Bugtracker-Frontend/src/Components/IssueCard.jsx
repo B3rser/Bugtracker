@@ -30,7 +30,6 @@ export function IssueCard({ issueData = {}, onCardClick = () => { }, onEdit = ()
     'high': 'High',
   };
 
-
   return (
     <div
       className="issue-card"

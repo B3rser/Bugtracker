@@ -1,28 +1,28 @@
 /*floatingBtn*/
 
 .floating-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: fixed;
-    z-index: 500;
-    width: 50px;
-    height: 50px;
-    background-color: var(--color-primary);
-    color: var(--color-white);
-    border: none;
-    border-radius: 50%;
-    font-size: 2rem;
-    cursor: pointer;
-    transition: transform 0.2s ease-in-out,
-        background-color 0.3s ease,
-        box-shadow 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  z-index: 500;
+  width: 50px;
+  height: 50px;
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border: none;
+  border-radius: 50%;
+  font-size: 2rem;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out,
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .floating-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    background-color: var(--color-secondary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: var(--color-secondary);
 }
 
 /*IconBtn*/
@@ -49,10 +49,6 @@
   transform: scale(1.1);
 }
 
-.icon-btn:active {
-  transform: scale(0.95);
-}
-
 /* --- Variantes de Color --- */
 
 .icon-btn.primary {
@@ -60,7 +56,7 @@
 }
 
 .icon-btn.primary:hover {
-  background-color: rgba(68, 187, 164, 0.1); 
+  background-color: rgba(68, 187, 164, 0.1);
 }
 
 .icon-btn.danger {
@@ -69,4 +65,59 @@
 
 .icon-btn.danger:hover {
   background-color: rgba(185, 28, 28, 0.1);
+}
+
+/*Button*/
+
+.btn {
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+
+  transition: transform 0.2s ease-in-out,
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+/* --- Variantes de Color --- */
+
+.btn.primary {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+}
+
+.btn.primary:disabled {
+  background-color: var(--color-subtle);
+  color: var(--color-disabled);
+  cursor: auto;
+  
+  transform: none;
+  box-shadow: none;
+}
+
+.btn.primary:not(:disabled):hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: var(--color-secondary);
+}
+
+.btn.secondary:disabled {
+  background-color: var(--color-subtle);
+  color: var(--color-disabled);
+  cursor: auto;
+  
+  transform: none;
+  box-shadow: none;
+}
+
+.btn.secondary {
+  background-color: var(--color-white);
+  color: var(--color-text);
+  border-color: var(--color-subtle);
 }

@@ -1,7 +1,15 @@
 import React from 'react'
+import './Buttons.css';
 
-export function Button() {
+export function Button({ children, variant = 'primary', onClick, disabled, type="button"}) {
   return (
-    <button>Button</button>
-  )
+    <button
+      className={`btn ${variant}`}
+      onClick={onClick}
+      disabled={disabled}
+      type={type}
+    >
+      {children}
+    </button>
+  );
 }

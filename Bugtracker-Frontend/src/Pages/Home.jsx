@@ -4,8 +4,10 @@ import { FloatingBtn } from '../Components/Buttons/FloatingBtn';
 import { IssueModal } from '../Components/IssueModal';
 import { Select } from '../Components/Select';
 import { IssueCardsContainer } from '../Components/IssueCardsContainer';
+import { PaginationContainer } from '../Components/PaginationContainer';
+import './Pages.css'
 
-export function Home() {
+export function Home({ showToast = () => { } }) {
   const [loading, setLoading] = React.useState(true);
   const [issues, setIssues] = React.useState([]);
   const [filters, setFilters] = React.useState({ status: '', priority: '' });
@@ -40,7 +42,7 @@ export function Home() {
           totalPages: response.totalPages,
         });
       } catch (error) {
-        console.error("Error fetching issues:", error);
+        showToast('error', error.error);
       } finally {
         setLoading(false);
       }
@@ -74,27 +76,30 @@ export function Home() {
     setOpenModal(true);
   }
 
-  const onCreateIssue = async (issueData) => {
-    const response = await createIssue(issueData);
-  }
-
-  const onEditIssue = async (id, issueData) => {
-    const response = await updateIssue(id, issueData);
-  }
-
-  const handleSubmit = (issueData) => {
-    if (mode == 'create') {
-      onCreateIssue(issueData);
-    } else {
-      onEditIssue(issueData._id, issueData)
+  const handleSaveIssue = async (issueData) => {
+    try {
+      if (mode === 'create') {
+        await createIssue(issueData);
+        showToast('success', 'Issue created successfully!');
+      } else {
+        await updateIssue(issueData._id, issueData);
+        showToast('success', 'Issue updated successfully!');
+      }
+      refreshData();
+      closeModal();
+    } catch (error) {
+      showToast('error', error.error);
     }
-    refreshData();
-    closeModal();
   }
 
   const onDeleteIssue = async (id) => {
-    const response = await deleteIssue(id);
-    refreshData();
+    try {
+      const response = await deleteIssue(id);
+      refreshData();
+      showToast('success', 'Issue deleted successfully.');
+    } catch (error) {
+      showToast('error', error.error);
+    }
   }
 
   const handleFilterChange = (e) => {
@@ -124,7 +129,7 @@ export function Home() {
   return (
     <div style={{ width: "100%" }}>
       <h1 style={{ color: "var(--color-text)" }}>Issues</h1>
-      <div style={{ display: "flex", flexDirection: "row", width: "100%", justifyContent: "end" }}>
+      <div style={{ display: "flex", flexDirection: "row", width: "100%", justifyContent: "end", gap: "1rem", padding: "16px", boxSizing: "border-box" }}>
         <Select
           name="priority"
           label="Priority"
@@ -140,26 +145,10 @@ export function Home() {
           options={statusOptions}
         />
       </div>
-      <IssueModal isOpen={openModal} mode={mode} onClose={closeModal} onSubmit={handleSubmit} issueData={selectedData} />
+      <IssueModal isOpen={openModal} mode={mode} onClose={closeModal} onSubmit={handleSaveIssue} issueData={selectedData} />
       <FloatingBtn onClick={openModalNewIssue} />
       {loading ? <p>Loading...</p> : <IssueCardsContainer onCardClick={openModalViewIssue} onEdit={openModalEditIssue} onDelete={onDeleteIssue} issues={issues} />}
-      <div className="pagination-container">
-        <button
-          onClick={() => goToPage(pagination.currentPage - 1)}
-          disabled={pagination.currentPage <= 1}
-        >
-          Previous
-        </button>
-        <span>
-          Page {pagination.currentPage} of {pagination.totalPages}
-        </span>
-        <button
-          onClick={() => goToPage(pagination.currentPage + 1)}
-          disabled={pagination.currentPage >= pagination.totalPages}
-        >
-          Next
-        </button>
-      </div>
+      <PaginationContainer goToPage={goToPage} pagination={pagination} />
     </div>
   )
 }
